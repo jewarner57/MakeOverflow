@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main>
+    <h1>Login</h1>
+
+    <form method='POST'>
+        {% for message in get_flashed_messages() %}
+        <p class="errorText">{{message}}</p>
+        {% endfor %}
+        <fieldset>
+            <label>
+                Email:
+                <input type="email" name="email" value="" placeholder="user@email.com" required="true">
+            </label>
+
+            <label>
+                Password:
+                <input type="password" name="password" value="" placeholder="password" required="true">
+            </label>
+
+            <input type="submit" class="submit" value="Login">
+        </fieldset>
+    </form>
+</main>
+
+{% endblock content %}
