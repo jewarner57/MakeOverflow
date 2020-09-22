@@ -95,6 +95,11 @@ def login():
         email = request.form.get("email")
         password = request.form.get("password")
 
+        if not request.form.get("remember"):
+            remember = False
+        else:
+            remember = True
+
         user = mongo.db.users.find_one({"email": email})
 
         # check if user exists and password matches hash
@@ -104,9 +109,9 @@ def login():
 
         userObj = User(user)
 
-        print(userObj)
+        print(remember)
 
-        login_user(userObj)
+        login_user(userObj, remember=remember)
 
         return redirect(url_for('myprofile'))
 
@@ -117,6 +122,7 @@ def login():
 @app.route('/logout')
 @login_required
 def logout():
+    """Logout the user"""
     logout_user()
     return redirect(url_for('home'))
 
@@ -140,6 +146,7 @@ def home():
 @app.route('/myprofile')
 @login_required
 def myprofile():
+    """Display the user's profile"""
     return render_template('profile.html')
 
 
