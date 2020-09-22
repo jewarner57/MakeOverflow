@@ -3,9 +3,11 @@
 
 <h1>Home Page</h1>
 <ul>
-    {% for user in users %}
-    <li>{{user.name + " " + user.email}}</li>
-    {% endfor %}
+    <h3>
+        {% if current_user.is_authenticated %}
+        Hi {{current_user.name}}
+        {% endif %}
+    </h3>
 </ul>
 
 {% endblock content %}

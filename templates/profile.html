@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if current_user.is_authenticated %}
+<h1>{{current_user.name}}'s Profile</h1>
+<ul>
+    <h3>
+        Email: {{current_user.email}}
+    </h3>
+</ul>
+{% endif %}
+
+{% endblock content %}
