@@ -9,22 +9,21 @@
         <p class="errorText">{{message}}</p>
         {% endfor %}
         <fieldset>
-            <label>
-                Email:
-                <input type="email" name="email" value="" placeholder="user@email.com" required="true">
-            </label>
+            <div class="form_container">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="" placeholder="user@email.com" required="true">
 
-            <label>
-                Password:
-                <input type="password" name="password" value="" placeholder="password" required="true">
-            </label>
 
-            <label>
-                Remember Me:
-                <input type="checkbox" name="remember" value="True" placeholder="">
-            </label>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" value="" placeholder="password" required="true">
 
-            <input type="submit" class="submit" value="Login">
+
+                <label for="remember">Remember Me:
+                    <input type="checkbox" id="remember" name="remember" value="True" placeholder="">
+                </label>
+
+                <input type="submit" class="submit" value="Login">
+            </div>
         </fieldset>
     </form>
 

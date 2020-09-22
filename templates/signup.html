@@ -9,22 +9,19 @@
         <p class="errorText">{{message}}</p>
         {% endfor %}
         <fieldset>
-            <label>
-                Name:
-                <input type="text" name="name" value="" placeholder="your name" required="true">
-            </label>
+            <div class="form_container">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="" placeholder="your name" required="true">
 
-            <label>
-                Email:
-                <input type="email" name="email" value="" placeholder="user@email.com" required="true">
-            </label>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="" placeholder="user@email.com" required="true">
 
-            <label>
-                Password:
-                <input type="password" name="password" value="" placeholder="password" required="true">
-            </label>
 
-            <input type="submit" class="submit" value="Submit!">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" value="" placeholder="password" required="true">
+
+                <input type="submit" class="submit" value="Submit!">
+            </div>
         </fieldset>
     </form>
 </main>
