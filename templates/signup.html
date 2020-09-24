@@ -3,27 +3,29 @@
 
 <main>
     <h1>Create an Account</h1>
-
     <form method='POST'>
-        {% for message in get_flashed_messages() %}
-        <p class="errorText">{{message}}</p>
-        {% endfor %}
         <fieldset>
             <div class="form_container">
                 <label for="name">Name:</label>
-                <input type="text" id="name" name="name" value="" placeholder="your name" required="true">
+                <input type="text" id="name" name="name" value="{{name}}" placeholder="your name" required="true">
 
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="" placeholder="user@email.com" required="true">
+                <input type="email" id="email" name="email" value="{{email}}" placeholder="user@email.com"
+                    required="true">
 
 
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" value="" placeholder="password" required="true">
 
                 <input type="submit" class="submit" value="Submit!">
+
+                {% for message in get_flashed_messages() %}
+                <p class="errorText">{{message}}</p>
+                {% endfor %}
             </div>
         </fieldset>
     </form>
+
 </main>
 
 {% endblock content %}

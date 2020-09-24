@@ -2,12 +2,25 @@
 {% block content %}
 
 {% if current_user.is_authenticated %}
-<h1>{{current_user.name}}'s Profile</h1>
-<ul>
+
+<section>
+
+    <h1>{{current_user.name}}'s Profile</h1>
+
     <h3>
         Email: {{current_user.email}}
     </h3>
-</ul>
+
+
+    <a href="/edit-profile" class="button">
+        <div>Edit Profile</div>
+    </a>
+    <form method="POST" action="/delete-profile" onsubmit="return confirm_delete()">
+        <input type="submit" class="button danger" value="Delete Profile">
+    </form>
+
+</section>
+
 {% endif %}
 
 {% endblock content %}

@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, render_template, url_for, flash
-from flask_login import login_user, logout_user, LoginManager, login_required
+from flask_login import login_user, logout_user, LoginManager, login_required, current_user
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -7,6 +7,7 @@ from datetime import datetime
 import os
 from dotenv import load_dotenv
 from user import User
+import re
 
 
 ############################################################
@@ -74,12 +75,25 @@ def signup():
             "is_authenticated": True
         }
 
+        context = {
+            "name": name,
+            "email": email,
+        }
+
+        # check if password matches restrictions
+        pattern = re.compile("(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}")
+        passMatch = pattern.match(password)
+
         # check if the email has already been used for an account
         emailExists = mongo.db.users.find_one({"email": email})
 
         if emailExists:
             flash("Email Is Already Associated with an Account.")
-            return redirect(url_for('signup'))
+            return render_template('signup.html', **context)
+        elif not passMatch:
+            flash(
+                "Password must be 8 characters long with atleast one uppercase and lowercase letter and one number")
+            return render_template('signup.html', **context)
         else:
             mongo.db.users.insert_one(new_user)
             return redirect(url_for('login'))
@@ -123,6 +137,7 @@ def login():
 @login_required
 def logout():
     """Logout the user"""
+    print(current_user.id)
     logout_user()
     return redirect(url_for('home'))
 
@@ -148,6 +163,43 @@ def home():
 def myprofile():
     """Display the user's profile"""
     return render_template('profile.html')
+
+
+@app.route('/edit-profile', methods=["GET", "POST"])
+@login_required
+def edit_profile():
+    """Display the page to edit a user's profile"""
+    if request.method == 'POST':
+
+        name = request.form.get("name")
+        email = request.form.get("email")
+        user_id = current_user.id
+
+        mongo.db.users.update_one({
+            '_id': ObjectId(user_id)
+        },
+            {
+            '$set': {
+                'name': name,
+                'email': email
+            }
+        })
+
+        return redirect(url_for("myprofile"))
+    else:
+        return render_template('edit-profile.html')
+
+
+@app.route('/delete-profile', methods=["POST"])
+@login_required
+def delete_profile():
+    """Delete the user's profile"""
+    user_id = current_user.id
+
+    mongo.db.users.delete_one({"_id": ObjectId(user_id)})
+
+    logout()
+    return redirect(url_for("home"))
 
 
 if __name__ == '__main__':

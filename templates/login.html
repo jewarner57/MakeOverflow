@@ -5,9 +5,6 @@
     <h1>Login</h1>
 
     <form method='POST'>
-        {% for message in get_flashed_messages() %}
-        <p class="errorText">{{message}}</p>
-        {% endfor %}
         <fieldset>
             <div class="form_container">
                 <label for="email">Email:</label>
@@ -23,6 +20,10 @@
                 </label>
 
                 <input type="submit" class="submit" value="Login">
+
+                {% for message in get_flashed_messages() %}
+                <p class="errorText">{{message}}</p>
+                {% endfor %}
             </div>
         </fieldset>
     </form>

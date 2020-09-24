@@ -7,6 +7,14 @@ body {
     padding-bottom: 100px;
 }
 
+section {
+    padding:0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 main {
     width: 800px;
     display: flex;
@@ -54,7 +62,7 @@ footer {
     left: 0
 }
 
-a.nav, input.nav, form input.submit {
+a.nav, input.nav, form input.submit, .button {
     border: none;
     background-color: #4364ac;
     border-radius: 3px;
@@ -62,6 +70,11 @@ a.nav, input.nav, form input.submit {
     padding: 10px 15px;
     text-decoration: none;
     font-size: 1em;
+    margin: 10px;
+}
+
+.danger {
+    background-color: #d9534f;
 }
 
 .form_container {
@@ -77,4 +90,5 @@ input {
 
 .errorText {
     color: red;
+    text-align: center;
 }

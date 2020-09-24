@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Home Page</h1>
-<ul>
+<section>
+    <h1>Home Page</h1>
     <h3>
         {% if current_user.is_authenticated %}
         Hi {{current_user.name}}
         {% endif %}
     </h3>
-</ul>
+</section>
+
 
 {% endblock content %}
