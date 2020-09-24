@@ -175,17 +175,24 @@ def edit_profile():
         email = request.form.get("email")
         user_id = current_user.id
 
-        mongo.db.users.update_one({
-            '_id': ObjectId(user_id)
-        },
-            {
-            '$set': {
-                'name': name,
-                'email': email
-            }
-        })
+        # get if email already exists in db
+        emailExists = mongo.db.users.find({"email": email})
 
-        return redirect(url_for("myprofile"))
+        # if the email already exists and it isn't the users current email
+        if emailExists.count() > 0 and not email == current_user.email:
+            flash("Email Already Exists.")
+            return render_template('edit-profile.html')
+        else:
+            mongo.db.users.update_one({
+                '_id': ObjectId(user_id)
+            },
+                {
+                '$set': {
+                    'name': name,
+                    'email': email
+                }
+            })
+            return redirect(url_for("myprofile"))
     else:
         return render_template('edit-profile.html')
 
