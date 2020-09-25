@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section>
+    <form method='POST'>
+        <h1>Edit Post</h1>
+        <fieldset>
+            <div class="form_container">
+                <label for="name">Post Title:</label>
+                <input type="text" id="title" name="title" value="{{post.title}}" placeholder="Title" required="true">
+
+                <label for="content">Post Content</label>
+                <input type="text" id="content" name="content" value="{{post.content}}" placeholder="My Post Text..."
+                    required="true">
+
+                <input type="submit" class="submit" value="Submit!">
+
+                <a href="/delete-post/{{post._id}}" class="danger button">
+                    <div>Delete Post</div>
+                </a>
+
+                {% for message in get_flashed_messages() %}
+                <p class="errorText">{{message}}</p>
+                {% endfor %}
+            </div>
+        </fieldset>
+    </form>
+</section>
+
+{% endblock content %}

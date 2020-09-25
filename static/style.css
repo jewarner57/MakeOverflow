@@ -73,10 +73,6 @@ a.nav, input.nav, form input.submit, .button {
     margin: 10px;
 }
 
-.danger {
-    background-color: #d9534f;
-}
-
 .form_container {
     display: flex;
     flex-direction: column;
@@ -89,6 +85,11 @@ input {
 }
 
 .errorText {
-    color: red;
+    color: #d9534f;
+    text-align: center;
+}
+
+.danger {
+    background-color: #d9534f;
     text-align: center;
 }

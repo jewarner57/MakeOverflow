@@ -6,7 +6,18 @@
     <h3>
         {{post.content}}
     </h3>
+    <p>Post Author: {{post.authorName}}</p>
+    <p>Posted On: {{post.date_created.strftime('%B %-d, %Y')}}</p>
+    {% if current_user.id == post.authorId %}
+    <a href="/edit-post/{{post._id}}" class="button">
+        <div>Edit Post</div>
+    </a>
+    <form method="POST" action="/delete-post/{{post._id}}" onsubmit="return confirm_delete()">
+        <input type="submit" class="button danger" value="Delete Post">
+    </form>
+    {% endif %}
 </section>
+
 
 
 {% endblock content %}

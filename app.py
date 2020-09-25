@@ -150,10 +150,10 @@ def logout():
 def home():
     """Display the home page."""
     # find all users
-    user_data = mongo.db.users.find()
+    post_data = mongo.db.posts.find()
 
     context = {
-        'users': user_data
+        'posts': post_data
     }
     return render_template('home.html', **context)
 
@@ -165,7 +165,7 @@ def myprofile():
 
     user_id = current_user.id
 
-    user_posts = mongo.db.posts.find({"author": user_id})
+    user_posts = mongo.db.posts.find({"authorId": user_id})
 
     context = {
         "user_posts": user_posts
@@ -233,7 +233,9 @@ def create_post():
         post = {
             "title": title,
             "content": content,
-            "author": current_user.id
+            "authorId": current_user.id,
+            "authorName": current_user.name,
+            "date_created": datetime.now()
         }
 
         new_post = mongo.db.posts.insert_one(post)
@@ -250,13 +252,69 @@ def create_post():
 def view_post(post_id):
     """Display a post by its id"""
 
-    post = mongo.db.posts.find_one({"_id": ObjectId(post_id)})
+    post = mongo.db.posts.find_one_or_404({"_id": ObjectId(post_id)})
 
     context = {
         "post": post
     }
 
     return render_template('view-post.html', **context)
+
+
+@app.route('/edit-post/<post_id>', methods=["GET", "POST"])
+@login_required
+def edit_post(post_id):
+    """Display the page to edit a post"""
+
+    post = mongo.db.posts.find_one_or_404({"_id": ObjectId(post_id)})
+    user_id = current_user.id
+    post_author_id = post["authorId"]
+
+    if not user_id == post_author_id:
+        return redirect(url_for("view_post", post_id=post_id))
+
+    if request.method == 'POST':
+
+        title = request.form.get("title")
+        content = request.form.get("content")
+
+        mongo.db.posts.update_one({
+            '_id': ObjectId(post_id)
+        },
+            {
+            '$set': {
+                'title': title,
+                'content': content
+            }
+        })
+
+        return redirect(url_for("view_post", post_id=post_id))
+    else:
+
+        context = {
+            "post": post
+        }
+
+        return render_template('edit-post.html', **context)
+
+
+@app.route('/delete-post/<post_id>', methods=["POST"])
+@login_required
+def delete_post(post_id):
+    """Delete a post by its id"""
+
+    post = mongo.db.posts.find_one_or_404({"_id": ObjectId(post_id)})
+    user_id = current_user.id
+    post_author_id = post["authorId"]
+
+    if user_id == post_author_id:
+
+        mongo.db.posts.delete_one({"_id": ObjectId(post_id)})
+
+        return redirect(url_for("myprofile"))
+
+    else:
+        return redirect(url_for("view_post", post_id=post_id))
 
 
 if __name__ == '__main__':
