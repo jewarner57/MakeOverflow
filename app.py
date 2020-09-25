@@ -162,7 +162,16 @@ def home():
 @login_required
 def myprofile():
     """Display the user's profile"""
-    return render_template('profile.html')
+
+    user_id = current_user.id
+
+    user_posts = mongo.db.posts.find({"author": user_id})
+
+    context = {
+        "user_posts": user_posts
+    }
+
+    return render_template('profile.html', **context)
 
 
 @app.route('/edit-profile', methods=["GET", "POST"])
@@ -207,6 +216,47 @@ def delete_profile():
 
     logout()
     return redirect(url_for("home"))
+
+############################################################
+# POST ROUTES
+############################################################
+
+
+@app.route('/create-post', methods=["GET", "POST"])
+@login_required
+def create_post():
+    """Display a create post page"""
+    if request.method == 'POST':
+        title = request.form.get("title")
+        content = request.form.get("content")
+
+        post = {
+            "title": title,
+            "content": content,
+            "author": current_user.id
+        }
+
+        new_post = mongo.db.posts.insert_one(post)
+        post_id = new_post.inserted_id
+
+        return redirect(url_for('view_post', post_id=post_id))
+
+    else:
+        return render_template('create-post.html')
+
+
+@app.route('/view-post/<post_id>')
+@login_required
+def view_post(post_id):
+    """Display a post by its id"""
+
+    post = mongo.db.posts.find_one({"_id": ObjectId(post_id)})
+
+    context = {
+        "post": post
+    }
+
+    return render_template('view-post.html', **context)
 
 
 if __name__ == '__main__':

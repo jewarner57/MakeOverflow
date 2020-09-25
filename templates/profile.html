@@ -20,6 +20,12 @@
     </form>
 
 </section>
+<section>
+    <h3>My Posts</h3>
+    {% for post in user_posts %}
+    <p><b>{{post.title}}:</b> {{post.content}}</p>
+    {% endfor %}
+</section>
 
 {% endif %}
 
