@@ -229,10 +229,12 @@ def create_post():
     if request.method == 'POST':
         title = request.form.get("title")
         content = request.form.get("content")
+        featured_image = request.form.get("featured-image")
 
         post = {
             "title": title,
             "content": content,
+            "featuredImage": featured_image,
             "authorId": current_user.id,
             "authorName": current_user.name,
             "date_created": datetime.now()
@@ -277,6 +279,7 @@ def edit_post(post_id):
 
         title = request.form.get("title")
         content = request.form.get("content")
+        featuredImage = request.form.get("featured-image")
 
         mongo.db.posts.update_one({
             '_id': ObjectId(post_id)
@@ -284,6 +287,7 @@ def edit_post(post_id):
             {
             '$set': {
                 'title': title,
+                'featuredImage': featuredImage,
                 'content': content
             }
         })
