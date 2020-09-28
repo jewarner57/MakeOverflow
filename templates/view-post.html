@@ -19,6 +19,18 @@
         <input type="submit" class="button danger" value="Delete Post">
     </form>
     {% endif %}
+
+
+    <h3>Comments:</h3>
+
+    {% for comment in comments %}
+    <p><b>{{comment.author_name}}</b>: {{comment.text}}</p>
+    {% endfor %}
+
+    <form method="POST" action="/comment/{{post._id}}">
+        <input type="text" name="comment" value="" placeholder="Comment Here">
+        <input type="submit" class="button" value="Send">
+    </form>
 </section>
 
 {% endblock content %}

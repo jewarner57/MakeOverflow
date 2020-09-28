@@ -119,11 +119,9 @@ def login():
         # check if user exists and password matches hash
         if not user or not check_password_hash(user["password"], password):
             flash("The email or password you entered is invalid")
-            return redirect(url_for('login'))
+            return render_template('login.html')
 
         userObj = User(user)
-
-        print(remember)
 
         login_user(userObj, remember=remember)
 
@@ -255,9 +253,11 @@ def view_post(post_id):
     """Display a post by its id"""
 
     post = mongo.db.posts.find_one_or_404({"_id": ObjectId(post_id)})
+    comments = mongo.db.comments.find({"post_id": post_id})
 
     context = {
-        "post": post
+        "post": post,
+        "comments": comments
     }
 
     return render_template('view-post.html', **context)
@@ -319,6 +319,29 @@ def delete_post(post_id):
 
     else:
         return redirect(url_for("view_post", post_id=post_id))
+
+
+############################################################
+# COMMENT ROUTES
+############################################################
+@app.route('/comment/<post_id>', methods=["POST"])
+@login_required
+def comment(post_id):
+    """Save the users comment and send them back to the post they commented on"""
+
+    commentText = request.form.get("comment")
+
+    comment = {
+        "post_id": post_id,
+        "author": current_user.id,
+        "author_name": current_user.name,
+        "text": commentText,
+        "post_date": datetime.now()
+    }
+
+    mongo.db.comments.insert_one(comment)
+
+    return redirect(url_for('view_post', post_id=post_id))
 
 
 if __name__ == '__main__':
