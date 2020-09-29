@@ -3,17 +3,17 @@
 
 <section>
     <form method='POST'>
-        <h1>Create a new post</h1>
+        <h1>Ask a question</h1>
         <fieldset>
             <div class="form_container">
-                <label for="name">Post Title:</label>
+                <label for="name">Title:</label>
                 <input type="text" id="title" name="title" value="" placeholder="Title" required="true">
 
-                <label for="featured-image">Featured Image</label>
+                <label for="featured-image">Helpful Screenshot</label>
                 <input type="url" id="featured-image" name="featured-image" value="" placeholder="Link to image">
 
-                <label for="content">Post Content</label>
-                <input type="text" id="content" name="content" value="" placeholder="My Post Text..." required="true">
+                <label for="content">Detailed Qustion Description</label>
+                <textarea id="content" name="content" placeholder="Start Your Post" required="true"></textarea>
 
                 <input type="submit" class="submit" value="Submit!">
 

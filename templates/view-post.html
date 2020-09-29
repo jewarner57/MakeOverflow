@@ -24,13 +24,29 @@
     <h3>Comments:</h3>
 
     {% for comment in comments %}
-    <p><b>{{comment.author_name}}</b>: {{comment.text}}</p>
+    <div class="textShortContainer">
+        <p class="textShort"><b>{{comment.author_name}}</b>: {{comment.text}}</p>
+
+        {% if current_user.id == post.authorId and post.answered == "unsolved"%}
+        <form method="GET" action="/mark-as-solution/{{comment._id}}">
+            <input type="submit" class="button safe" value="Mark As Solution">
+        </form>
+        {% endif %}
+
+        {% if post.answered == comment._id %}
+        <p class="textShort safe">Solution</p>
+        {% endif %}
+    </div>
+
     {% endfor %}
 
     <form method="POST" action="/comment/{{post._id}}">
         <input type="text" name="comment" value="" placeholder="Comment Here">
         <input type="submit" class="button" value="Send">
     </form>
+
+
+
 </section>
 
 {% endblock content %}

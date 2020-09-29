@@ -235,7 +235,8 @@ def create_post():
             "featuredImage": featured_image,
             "authorId": current_user.id,
             "authorName": current_user.name,
-            "date_created": datetime.now()
+            "date_created": datetime.now(),
+            "answered": "unsolved"
         }
 
         new_post = mongo.db.posts.insert_one(post)
@@ -342,6 +343,37 @@ def comment(post_id):
     mongo.db.comments.insert_one(comment)
 
     return redirect(url_for('view_post', post_id=post_id))
+
+
+@app.route('/mark-as-solution/<comment_id>')
+@login_required
+def mark_as_solution(comment_id):
+    """Mark the selected comment as the answer to the post"""
+
+    comment = mongo.db.comments.find_one_or_404({"_id": ObjectId(comment_id)})
+
+    post = mongo.db.posts.find_one_or_404(
+        {"_id": ObjectId(comment["post_id"])})
+
+    post_author_id = post["authorId"]
+
+    post_id = post["_id"]
+
+    if current_user.id == post_author_id:
+
+        mongo.db.posts.update_one({
+            '_id': ObjectId(post_id)
+        },
+            {
+            '$set': {
+                'answered': comment["_id"]
+            }
+        })
+
+        return redirect(url_for('view_post', post_id=ObjectId(post_id)))
+
+    else:
+        return redirect(url_for('view_post', post_id=ObjectId(post_id)))
 
 
 if __name__ == '__main__':

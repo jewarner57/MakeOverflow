@@ -93,3 +93,40 @@ input {
     background-color: #d9534f;
     text-align: center;
 }
+
+.safe {
+    background-color: #4CAF50;
+    text-align: center;
+}
+
+textarea {
+    resize:vertical;
+    font-family: 'Helvetica', sans-serif;
+    line-height: 30px;
+    padding: 5px;
+}
+
+.textShortContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.493);
+    border-radius: 5px;
+    margin-top: 10px;
+    
+}
+
+.textShort {
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 10px;
+}
+
+.unsolved {
+    background-color:#d9534f;
+}
+
+.solved {
+    background-color: #4CAF50
+}
