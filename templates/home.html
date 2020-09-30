@@ -2,10 +2,12 @@
 {% block content %}
 
 <section>
-    <h1>Home Page</h1>
+    <h1></h1>
     <h3>
         {% if current_user.is_authenticated %}
         Hi {{current_user.name}}
+        {% else %}
+        Home
         {% endif %}
     </h3>
     <h3>Recent Unsolved Posts: </h3>
@@ -13,7 +15,7 @@
     {% if post.answered == "unsolved" %}
     <div class="textShortContainer">
         <a href="view-post/{{post._id}}" class="textShort">
-            <p><b>{{post.title}}:</b> {{post.content[0:20]}}...</p>
+            <p><b>{{post.title}}:</b> {{post.content[0:30]}}...</p>
         </a>
         {% if post.answered == "unsolved" %}
         <p class="textShort {{post.answered}}">Not Solved</p>

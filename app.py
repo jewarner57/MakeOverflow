@@ -1,4 +1,5 @@
 from flask import Flask, request, redirect, render_template, url_for, flash
+from flask_mail import Mail, Message
 from flask_login import login_user, logout_user, LoginManager, login_required, current_user
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
@@ -33,6 +34,22 @@ login_manager.init_app(app)
 def load_user(user_id):
     """Loads the current user from the database by id and returns a user object"""
     return User(mongo.db.users.find_one({"_id": ObjectId(user_id)}))
+
+
+# configure flask-mail
+mail = Mail()
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+
+# get password for email from .env
+
+app.config['MAIL_USERNAME'] = 'teedbearjoe@gmail.com'
+app.config['MAIL_PASSWORD'] = os.getenv('GMAIL_PASSWORD')
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+mail.init_app(app)
 
 ############################################################
 # ERROR
@@ -96,6 +113,15 @@ def signup():
             return render_template('signup.html', **context)
         else:
             mongo.db.users.insert_one(new_user)
+
+            msg = Message(subject="Confirm your email for MakeOverflow!",
+                          html="""<a href='https://www.google.com'>
+                                    Click Here To Authenticate Your Email!
+                                </a>""",
+                          sender="teedbearjoe@gmail.com",
+                          recipients=[email])
+            mail.send(msg)
+
             return redirect(url_for('login'))
     else:
         return render_template('signup.html')
@@ -315,6 +341,7 @@ def delete_post(post_id):
     if user_id == post_author_id:
 
         mongo.db.posts.delete_one({"_id": ObjectId(post_id)})
+        mongo.db.comments.delete_many({"post_id": post_id})
 
         return redirect(url_for("myprofile"))
 
