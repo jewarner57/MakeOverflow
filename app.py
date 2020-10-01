@@ -123,8 +123,12 @@ def signup():
         else:
             mongo.db.users.insert_one(new_user)
             confirmation_token = generate_confirmation_token(email)
+
+            confirm_email_link = url_for(
+                "confirm_email", token=confirmation_token, _external=True)
+
             msg = Message(subject="Confirm your email for MakeOverflow!",
-                          html=f"""<a href='http://localhost:5000/confirm-email/{confirmation_token}'>
+                          html=f"""<a href='{confirm_email_link}'>
                                     Click Here To Authenticate Your Email!
                                 </a>""",
                           sender="teedbearjoe@gmail.com",
@@ -211,8 +215,12 @@ def forgot_password():
             return render_template("forgot-password.html")
 
         if user is not None:
+
+            resetLink = url_for(
+                "reset_password", token=confirmation_token, _external=True)
+
             msg = Message(subject="Reset Your Password for MakeOverflow.",
-                          html=f"""<a href='http://localhost:5000/reset-password/{confirmation_token}'>
+                          html=f"""<a href='{resetLink}'>
                                     Click Here To Reset Your Password
                                 </a>""",
                           sender="teedbearjoe@gmail.com",
