@@ -4,6 +4,7 @@ from flask_login import login_user, logout_user, LoginManager, login_required, c
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime
 import os
 from dotenv import load_dotenv
@@ -21,6 +22,8 @@ load_dotenv()
 app = Flask(__name__)
 # configure secret key for app
 app.secret_key = os.getenv('SECRET_KEY')
+# configure app password salt
+app.config["SECURITY_PASSWORD_SALT"] = os.getenv('SECURITY_PASSWORD_SALT')
 # configure mongodb uri
 app.config["MONGO_URI"] = "mongodb://localhost:27017/web_final_database"
 mongo = PyMongo(app)
@@ -32,8 +35,14 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
+    print(user_id)
     """Loads the current user from the database by id and returns a user object"""
-    return User(mongo.db.users.find_one({"_id": ObjectId(user_id)}))
+    user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+
+    if user is None:
+        return login_manager.anonymous_user
+
+    return User(user)
 
 
 # configure flask-mail
@@ -56,13 +65,13 @@ mail.init_app(app)
 ############################################################
 
 
-@app.errorhandler(404)
+@ app.errorhandler(404)
 def page_not_found(e):
     """display a 404 response page"""
     return render_template('404.html'), 404
 
 
-@app.errorhandler(401)
+@ app.errorhandler(401)
 def not_authorized(e):
     """send the user to the login screen when they try to access a locked page"""
     flash("Please Login to View This Page")
@@ -73,7 +82,7 @@ def not_authorized(e):
 ############################################################
 
 
-@app.route('/signup', methods=["GET", "POST"])
+@ app.route('/signup', methods=["GET", "POST"])
 def signup():
     """Display the signup page."""
     if request.method == 'POST':
@@ -89,7 +98,7 @@ def signup():
             "email": email,
             "password": hashed_password,
             "date_created": date_created,
-            "is_authenticated": True
+            "confirmed_email": False
         }
 
         context = {
@@ -113,9 +122,9 @@ def signup():
             return render_template('signup.html', **context)
         else:
             mongo.db.users.insert_one(new_user)
-
+            confirmation_token = generate_confirmation_token(email)
             msg = Message(subject="Confirm your email for MakeOverflow!",
-                          html="""<a href='https://www.google.com'>
+                          html=f"""<a href='http://localhost:5000/confirm-email/{confirmation_token}'>
                                     Click Here To Authenticate Your Email!
                                 </a>""",
                           sender="teedbearjoe@gmail.com",
@@ -161,19 +170,58 @@ def login():
 @login_required
 def logout():
     """Logout the user"""
-    print(current_user.id)
     logout_user()
     return redirect(url_for('home'))
 
+
+@app.route('/confirm-email/<token>')
+def confirm_email(token):
+    """Confirms the user's email."""
+    email = confirm_token(token)
+    user = mongo.db.users.find_one_or_404({"email": email})
+
+    mongo.db.users.update_one({
+        "_id": ObjectId(user["_id"])
+    },
+        {
+        '$set': {
+            'confirmed_email': True
+        }
+    })
+
+    context = {
+        "email": email
+    }
+
+    return render_template("confirm_email.html", **context)
+
+
+def generate_confirmation_token(email):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    return serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
+
+
+def confirm_token(token, expiration=3600):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    try:
+        email = serializer.loads(
+            token,
+            salt=app.config['SECURITY_PASSWORD_SALT'],
+            max_age=expiration
+        )
+    except:
+        return False
+    return email
 
 ############################################################
 # MAIN ROUTES
 ############################################################
 
+
 @app.route('/')
 def home():
     """Display the home page."""
-    # find all users
+    # find all unanswered posts
     post_data = mongo.db.posts.find()
 
     context = {
@@ -237,6 +285,8 @@ def delete_profile():
     user_id = current_user.id
 
     mongo.db.users.delete_one({"_id": ObjectId(user_id)})
+    mongo.db.posts.delete_many({"authorId": user_id})
+    mongo.db.comments.delete_many({"author": user_id})
 
     logout()
     return redirect(url_for("home"))

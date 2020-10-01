@@ -3,6 +3,7 @@ class User():
         self.name = user_data["name"]
         self.email = user_data["email"]
         self.id = str(user_data["_id"])
+        self.confirmed_email = user_data["confirmed_email"]
 
     def is_authenticated(self):
         return True
