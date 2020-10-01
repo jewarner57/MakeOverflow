@@ -193,7 +193,71 @@ def confirm_email(token):
         "email": email
     }
 
-    return render_template("confirm_email.html", **context)
+    return render_template("confirm-email.html", **context)
+
+
+@app.route('/forgot-password', methods=["GET", "POST"])
+def forgot_password():
+    """Show forgot password screen"""
+    if request.method == "POST":
+
+        email = request.form.get("email")
+        confirmation_token = generate_confirmation_token(email)
+
+        user = mongo.db.users.find_one({"email": email})
+
+        if not user["confirmed_email"]:
+            flash("Cannot Reset Password With Unverified Email Address")
+            return render_template("forgot-password.html")
+
+        if user is not None:
+            msg = Message(subject="Reset Your Password for MakeOverflow.",
+                          html=f"""<a href='http://localhost:5000/reset-password/{confirmation_token}'>
+                                    Click Here To Reset Your Password
+                                </a>""",
+                          sender="teedbearjoe@gmail.com",
+                          recipients=[email])
+            mail.send(msg)
+
+        flash("Reset Password Email Sent")
+        return render_template("forgot-password.html")
+
+    else:
+        return render_template("forgot-password.html")
+
+
+@app.route('/reset-password/<token>', methods=["GET", "POST"])
+def reset_password(token):
+    """Allow the user to update their password if they have a valid token."""
+    email = confirm_token(token)
+    user = mongo.db.users.find_one_or_404({"email": email})
+
+    if request.method == "POST":
+
+        password = request.form.get("password")
+        hashed_password = generate_password_hash(password)
+
+        pattern = re.compile("(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}")
+        passMatch = pattern.match(password)
+
+        if passMatch:
+            mongo.db.users.update_one({
+                "_id": ObjectId(user["_id"])
+            },
+                {
+                '$set': {
+                    'password': hashed_password
+                }
+            })
+
+            return redirect(url_for("login"))
+
+        else:
+
+            flash("Password must be 8 characters long with atleast one uppercase and lowercase letter and one number")
+            return render_template("update-password.html")
+    else:
+        return render_template("update-password.html")
 
 
 def generate_confirmation_token(email):
