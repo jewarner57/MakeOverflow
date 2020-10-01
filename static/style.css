@@ -16,7 +16,7 @@ section {
 }
 
 main {
-    width: 800px;
+    max-width: 800px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -28,11 +28,11 @@ main {
 
 nav {
     width: 100%;
-    padding: 0;
     margin: 0;
     height: 40px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
     background-color: #4364ac;
     position: relative;
     top: 0;
@@ -42,9 +42,13 @@ nav {
 nav a {
     margin: auto 0;
     padding: 0 25px;
-    background-color: #4364ac;
+    font-size: 18px;
     color: white;
     text-decoration: none;
+}
+
+.siteTitle {
+    padding: 0 25px;
 }
 
 footer {

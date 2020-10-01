@@ -11,6 +11,10 @@
         Email: {{current_user.email}}
     </h3>
 
+    {% if not current_user.confirmed_email %}
+    <h4>Please verify your email. Check your email inbox and spam folder.</h4>
+    <p class="errorText">If you do not verify your email you could lose access to your account.</p>
+    {% endif %}
 
     <a href="/edit-profile" class="button">
         <div>Edit Profile</div>
