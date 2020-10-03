@@ -122,22 +122,27 @@ def signup():
             return render_template('signup.html', **context)
         else:
             mongo.db.users.insert_one(new_user)
-            confirmation_token = generate_confirmation_token(email)
 
-            confirm_email_link = url_for(
-                "confirm_email", token=confirmation_token, _external=True)
-
-            msg = Message(subject="Confirm your email for MakeOverflow!",
-                          html=f"""<a href='{confirm_email_link}'>
-                                    Click Here To Authenticate Your Email!
-                                </a>""",
-                          sender="teedbearjoe@gmail.com",
-                          recipients=[email])
-            mail.send(msg)
+            sendConfirmationEmail(email)
 
             return redirect(url_for('login'))
     else:
         return render_template('signup.html')
+
+
+def sendConfirmationEmail(email):
+    confirmation_token = generate_confirmation_token(email)
+
+    confirm_email_link = url_for(
+        "confirm_email", token=confirmation_token, _external=True)
+
+    msg = Message(subject="Confirm your email for MakeOverflow!",
+                  html=f"""<a href='{confirm_email_link}'>
+                                    Click Here To Authenticate Your Email!
+                                </a>""",
+                  sender="teedbearjoe@gmail.com",
+                  recipients=[email])
+    mail.send(msg)
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -338,13 +343,20 @@ def edit_profile():
             flash("Email Already Exists.")
             return render_template('edit-profile.html')
         else:
+
+            confirmed_email = current_user.confirmed_email
+            if not email == current_user.email:
+                sendConfirmationEmail(email)
+                confirmed_email = False
+
             mongo.db.users.update_one({
                 '_id': ObjectId(user_id)
             },
                 {
                 '$set': {
                     'name': name,
-                    'email': email
+                    'email': email,
+                    'confirmed_email': confirmed_email
                 }
             })
             return redirect(url_for("myprofile"))
