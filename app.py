@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect, render_template, url_for, flash
 from flask_mail import Mail, Message
-from flask_login import login_user, logout_user, LoginManager, login_required, current_user
+from flask_login import login_user, logout_user, LoginManager, fresh_login_required, login_required, current_user
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -74,7 +74,7 @@ def page_not_found(e):
 @ app.errorhandler(401)
 def not_authorized(e):
     """send the user to the login screen when they try to access a locked page"""
-    flash("Please Login to View This Page")
+    flash("Confirm Your Identity to Proceed")
     return redirect(url_for("login"))
 
 ############################################################
@@ -161,6 +161,8 @@ def login():
             return render_template('login.html')
 
         userObj = User(user)
+
+        print(remember)
 
         login_user(userObj, remember=remember)
 
@@ -319,7 +321,7 @@ def myprofile():
 
 
 @app.route('/edit-profile', methods=["GET", "POST"])
-@login_required
+@fresh_login_required
 def edit_profile():
     """Display the page to edit a user's profile"""
     if request.method == 'POST':
@@ -351,7 +353,7 @@ def edit_profile():
 
 
 @app.route('/delete-profile', methods=["POST"])
-@login_required
+@fresh_login_required
 def delete_profile():
     """Delete the user's profile"""
     user_id = current_user.id
