@@ -13,7 +13,7 @@ comment = Blueprint('comment', __name__, template_folder="templates")
 
 @comment.route('/comment/<post_id>', methods=["POST"])
 @login_required
-def comment(post_id):
+def add_comment(post_id):
     """Save the users comment and send them back to the post they commented on"""
 
     commentText = request.form.get("comment")

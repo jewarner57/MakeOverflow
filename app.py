@@ -6,12 +6,14 @@ from routes.auth import auth
 from routes.main import main
 from routes.profile import profile
 from routes.post import post
+from routes.comment import comment
 
 # register app routes
 app.register_blueprint(auth)
 app.register_blueprint(main)
 app.register_blueprint(profile)
 app.register_blueprint(post)
+app.register_blueprint(comment)
 
 
 ############################################################
