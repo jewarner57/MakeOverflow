@@ -89,7 +89,7 @@ def login():
 
         login_user(userObj, remember=remember)
 
-        return redirect(url_for('myprofile'))
+        return redirect(url_for('profile.myprofile'))
 
     else:
         return render_template('login.html')
@@ -142,7 +142,7 @@ def forgot_password():
         if user is not None:
 
             resetLink = url_for(
-                "reset_password", token=confirmation_token, _external=True)
+                "auth.reset_password", token=confirmation_token, _external=True)
 
             msg = Message(subject="Reset Your Password for MakeOverflow.",
                           html=f"""<a href='{resetLink}'>
@@ -183,7 +183,7 @@ def reset_password(token):
                 }
             })
 
-            return redirect(url_for("login"))
+            return redirect(url_for("auth.login"))
 
         else:
 
@@ -219,7 +219,7 @@ def sendConfirmationEmail(email):
     confirmation_token = generate_confirmation_token(email)
 
     confirm_email_link = url_for(
-        "confirm_email", token=confirmation_token, _external=True)
+        "auth.confirm_email", token=confirmation_token, _external=True)
 
     msg = Message(subject="Confirm your email for MakeOverflow!",
                   html=f"""<a href='{confirm_email_link}'>

@@ -1,8 +1,8 @@
 from flask import render_template, request, redirect, url_for, flash, Blueprint
-from flask_login import login_required, fresh_login_required, current_user, logout_user
+from flask_login import login_required, fresh_login_required, current_user
 from bson.objectid import ObjectId
-from auth import sendConfirmationEmail
-from __init__ import app, mongo
+from routes.auth import sendConfirmationEmail
+from __init__ import mongo
 
 
 ############################################################
@@ -11,7 +11,7 @@ from __init__ import app, mongo
 profile = Blueprint('profile', __name__, template_folder="templates")
 
 
-@app.route('/myprofile')
+@profile.route('/myprofile')
 @login_required
 def myprofile():
     """Display the user's profile"""
@@ -27,7 +27,7 @@ def myprofile():
     return render_template('profile.html', **context)
 
 
-@app.route('/edit-profile', methods=["GET", "POST"])
+@profile.route('/edit-profile', methods=["GET", "POST"])
 @fresh_login_required
 def edit_profile():
     """Display the page to edit a user's profile"""
@@ -61,12 +61,12 @@ def edit_profile():
                     'confirmed_email': confirmed_email
                 }
             })
-            return redirect(url_for("myprofile"))
+            return redirect(url_for("profile.myprofile"))
     else:
         return render_template('edit-profile.html')
 
 
-@app.route('/delete-profile', methods=["POST"])
+@profile.route('/delete-profile', methods=["POST"])
 @fresh_login_required
 def delete_profile():
     """Delete the user's profile"""
@@ -76,5 +76,4 @@ def delete_profile():
     mongo.db.posts.delete_many({"authorId": user_id})
     mongo.db.comments.delete_many({"author": user_id})
 
-    logout()
-    return redirect(url_for("home"))
+    return redirect(url_for('auth.logout'))
