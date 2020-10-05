@@ -20,7 +20,9 @@ app.secret_key = os.getenv('SECRET_KEY')
 # configure app password salt
 app.config["SECURITY_PASSWORD_SALT"] = os.getenv('SECURITY_PASSWORD_SALT')
 # configure mongodb uri
-app.config["MONGO_URI"] = "mongodb://localhost:27017/web_final_database"
+dbhost = os.environ.get(
+    'MONGODB_URI', 'mongodb://localhost:27017/web_final_database') + "?retryWrites=false"
+app.config["MONGO_URI"] = dbhost
 # create mongo instance
 mongo = PyMongo(app)
 
