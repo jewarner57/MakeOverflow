@@ -21,7 +21,9 @@ def signup():
     if request.method == 'POST':
 
         name = request.form.get("name")
-        email = request.form.get("email")
+        emailPrefix = request.form.get("email")
+        email = f"{emailPrefix}@students.makeschool.com"
+        slackHandle = request.form.get("slackhandle")
         password = request.form.get("password")
         hashed_password = generate_password_hash(password)
         date_created = datetime.now()
@@ -29,6 +31,7 @@ def signup():
         new_user = {
             "name": name,
             "email": email,
+            "slackhandle": slackHandle,
             "password": hashed_password,
             "date_created": date_created,
             "confirmed_email": False

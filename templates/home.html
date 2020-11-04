@@ -2,30 +2,114 @@
 {% block content %}
 
 <section>
-    <h1></h1>
-    <h3>
-        {% if current_user.is_authenticated %}
-        Hi, {{current_user.name}}
-        {% else %}
-        Home
-        {% endif %}
-    </h3>
-    <h3>Recent Unsolved Posts: </h3>
-    {% for post in posts %}
-    {% if post.answered == "unsolved" %}
-    <div class="textShortContainer">
-        <a href="view-post/{{post._id}}" class="textShort">
-            <p><b>{{post.title}}:</b> {{post.content[0:30]}}...</p>
-        </a>
-        {% if post.answered == "unsolved" %}
-        <p class="textShort {{post.answered}}">Not Solved</p>
-        {% else %}
-        <p class="textShort safe">Solved</p>
-        {% endif %}
+    <div class="jumbotron hero-bgr border-0 rounded-0 bg-light m-0 text-white">
+        <div class="row">
+            <div class="offset-1 col-10">
+                <h1 class="display-4">Get Answers.</h1>
+                <p class="lead">Ask questions and get coding help from the Make School Community.</p>
+                <a class="btn btn-primary btn-lg" href="/signup" role="button">Start Now</a>
+            </div>
+        </div>
     </div>
-    {% endif %}
-    {% endfor %}
 </section>
 
+<section>
+    <div class="container pb-5 pt-4 col-12">
+        <div class="offset-1 col-10">
+            <div class="pb-4">
+                <h2>Code and Design help.</h2>
+                <p>Get help from more experienced students to jumpstart your projects.</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-12 mt-2">
+                    <div class="card col-12 border-0 p-0">
+                        <img class="card-img-top" src="./static/images/Design.jpeg" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Design</h5>
+                            <p class="card-text">Get another set of eyes on your design, and improve with feedback.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-12 mt-2">
+                    <div class="card col-12 border-0 p-0">
+                        <img class="card-img-top" src="./static/images/Code.jpeg" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Coding</h5>
+                            <p class="card-text">Squash that bug! Get debugging help from other students.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-12 mt-2">
+                    <div class="card col-12 border-0 p-0">
+                        <img class="card-img-top" src="./static/images/Creativity.jpeg" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Creativity</h5>
+                            <p class="card-text">Build ideas and get feedback. Get tips on how to find your next idea.
+                                sizes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</section>
+
+<section>
+    <div class="container mt-5 pb-5 text-center">
+        <div class="row">
+            <div class="offset-1 col-10">
+                <h3>Learn More</h3>
+                <p>Get the latest helpful news written by Make School students.</p>
+                <div class="text-left mt-5">
+                    <p>OCTOBER 28, 2020</p>
+                    <a href="#">Introduction To Bootstrap</a>
+                    <p>Quickly build proffesional websites using this popular library.</p>
+                </div>
+                <div class="text-left mt-5">
+                    <p>SEPTEMBER 1, 2020</p>
+                    <a href="#">Building Ideas</a>
+                    <p>How to create product ideas to solve real world problems.</p>
+                </div>
+                <div class="text-left mt-5">
+                    <p>AUGUST 19, 2020</p>
+                    <a href="#">How To Ask For Help</a>
+                    <p>How to ask a question that gives all the necessary information and is easy to answer.</p>
+                </div>
+            </div>
+        </div>
+</section>
+
+<section>
+    <div class="container offset-1 col-10">
+        <div class="row">
+            <div class="pb-4">
+                <h3>Recent Unanswered Questions</h3>
+                <a href="/posts">View All Unanswered Questions</a>
+            </div>
+        </div>
+        <div class="row">
+            {% for post in posts %}
+            {% if post.answered == "unsolved" %}
+            <div class="col-lg-4 col-sm-6">
+                <a href="view-post/{{post._id}}" class="card-title text-reset">
+                    <div class="card col-12 border-0 p-0">
+                        <img class="card-img-top" src="{{post.featuredImage}}" alt="{{post.title}}">
+                        <div class="card-body">
+
+                            <p class="card-title"><b>{{post.title}}:</b></p>
+
+                            <p class="card-text">{{post.content[0:30]}}...
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            {% endif %}
+            {% endfor %}
+        </div>
+
+    </div>
+</section>
 
 {% endblock content %}

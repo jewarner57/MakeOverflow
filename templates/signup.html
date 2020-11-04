@@ -2,29 +2,41 @@
 {% block content %}
 
 <main>
-    <h1>Create an Account</h1>
-    <form method='POST'>
-        <fieldset>
-            <div class="form_container">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" value="{{name}}" placeholder="your name" required="true">
 
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="{{email}}" placeholder="user@email.com"
-                    required="true">
-
-
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" value="" placeholder="password" required="true">
-
-                <input type="submit" class="submit" value="Submit!">
-
-                {% for message in get_flashed_messages() %}
-                <p class="errorText">{{message}}</p>
-                {% endfor %}
+    <div class=".container offset-3 col-6 my-5">
+        <h1>Create an Account</h1>
+        <form method='POST'>
+            <div class="form-group">
+                <label for="name">Username</label>
+                <input type="text" name="name" class="form-control" id="name">
             </div>
-        </fieldset>
-    </form>
+            <div class="form-group">
+                <label for="email">Student Email address</label>
+                <div class="input-group">
+                    <input type="text" name="email" class="form-control" id="email" aria-describedby="emailHelp">
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon2">@students.makeschool.com</span>
+                    </div>
+                </div>
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                    else.</small>
+            </div>
+            <div class="form-group">
+                <label for="slackhandle">Slack Display Name</label>
+                <input type="text" name="slackhandle" class="form-control" id="slackhandle">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" class="form-control" id="password">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-danger mt-3" role="alert">
+            {{message}}
+        </div>
+        {% endfor %}
+    </div>
 
 </main>
 
