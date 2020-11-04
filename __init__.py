@@ -19,10 +19,15 @@ app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 # configure app password salt
 app.config["SECURITY_PASSWORD_SALT"] = os.getenv('SECURITY_PASSWORD_SALT')
-# configure mongodb uri
-dbhost = os.environ.get(
-    'MONGODB_URI', 'mongodb://localhost:27017/web_final_database') + "?retryWrites=false"
-app.config["MONGO_URI"] = dbhost
+
+# configure mongodb uri for local testing
+# dbhost = os.environ.get(
+#     'MONGODB_URI', 'mongodb://localhost:27017/web_final_database') + "?retryWrites=false"
+
+mongopass = os.getenv("MONGODBPASS")
+mongouser = os.getenv("MONGODBUSER")
+
+app.config["MONGO_URI"] = f"mongodb+srv://{mongouser}:{mongopass}@cluster0.ovfiw.mongodb.net/makeoverflow?retryWrites=true&w=majority"
 # create mongo instance
 mongo = PyMongo(app)
 
