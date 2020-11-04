@@ -30,18 +30,17 @@
             <h3>Comments:</h3>
 
             {% for comment in comments %}
-            <div class="textShortContainer">
-                <p class="textShort"><b>{{comment.post_date.strftime("%m/%d/%y")}} - {{comment.author_name}}</b>:
-                    {{comment.text}} </p>
+            <div>
+                <p>{% if post.answered == comment._id %}
+                    <span class="badge badge-success">Marked As Solution</span>
+                    {% endif %}
+                    <b>{{comment.post_date.strftime("%m/%d/%y")}} - {{comment.author_name}}</b>:
+                    {{comment.text}}</p>
 
                 {% if current_user.id == post.authorId and post.answered == "unsolved"%}
                 <form method="GET" action="/mark-as-solution/{{comment._id}}">
                     <input type="submit" class="btn btn-success" value="Mark As Solution">
                 </form>
-                {% endif %}
-
-                {% if post.answered == comment._id %}
-                <p class="textShort safe">Solution</p>
                 {% endif %}
             </div>
 

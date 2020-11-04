@@ -2,27 +2,33 @@
 {% block content %}
 
 <section>
-    <form method='POST'>
-        <h1>Ask a question</h1>
-        <fieldset>
-            <div class="form_container">
+    <div class=".container offset-3 col-6 my-5">
+        <h1 class="mb-3">Ask a New Question</h1>
+        <form method='POST'>
+            <div class="form-group">
                 <label for="name">Title:</label>
-                <input type="text" id="title" name="title" value="" placeholder="Title" required="true">
-
-                <label for="featured-image">Helpful Screenshot</label>
-                <input type="url" id="featured-image" name="featured-image" value="" placeholder="Link to image">
-
-                <label for="content">Detailed Question Description</label>
-                <textarea id="content" name="content" placeholder="Start Your Post" required="true"></textarea>
-
-                <input type="submit" class="submit" value="Submit!">
-
-                {% for message in get_flashed_messages() %}
-                <p class="errorText">{{message}}</p>
-                {% endfor %}
+                <input class="form-control" type="text" id="title" name="title" value="" placeholder="Title"
+                    required="true">
             </div>
-        </fieldset>
-    </form>
+            <div class="form-group">
+                <label for="featured-image">Helpful Screenshot</label>
+                <input class="form-control" type="url" id="featured-image" name="featured-image" value=""
+                    placeholder="Link to image">
+            </div>
+            <div class="form-group">
+                <label for="content">Detailed Question Description</label>
+                <textarea class="form-control" id="content" name="content" placeholder="Write your question"
+                    required="true"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary px-4">Submit Question</button>
+        </form>
+
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-danger mt-3" role="alert">
+            {{message}}
+        </div>
+        {% endfor %}
+    </div>
 </section>
 
 {% endblock content %}

@@ -4,46 +4,54 @@
 {% if current_user.is_authenticated %}
 
 <section>
+    <div class="container">
+        <h1>{{current_user.name}}'s Profile</h1>
 
-    <h1>{{current_user.name}}'s Profile</h1>
+        <h4 class="mt-4">
+            Email: {{current_user.email}}
+        </h4>
 
-    <h3>
-        Email: {{current_user.email}}
-    </h3>
+        {% if not current_user.confirmed_email %}
+        <div class="alert alert-danger" role="alert">
+            Please verify your email. Check your email inbox and spam folder for the confirmation link.
+        </div>
+        {% endif %}
 
-    {% if not current_user.confirmed_email %}
-    <h4>Please verify your email. Check your email inbox and spam folder.</h4>
-    <p class="errorText">If you do not verify your email you could lose access to your account.</p>
-    {% endif %}
+        <a href="/edit-profile" class="btn btn-warning my-2">
+            <div>Edit Profile</div>
+        </a>
 
-    <a href="/edit-profile" class="button">
-        <div>Edit Profile</div>
-    </a>
-    <form method="POST" action="/delete-profile" onsubmit="return confirm_delete()">
-        <input type="submit" class="button danger" value="Delete Profile">
-    </form>
-
+        <form method="POST" action="/delete-profile" onsubmit="return confirm_delete()">
+            <input type="submit" class="btn btn-danger my-2" value="Delete Profile">
+        </form>
+        <hr>
 </section>
 <section>
-    <h3>My Posts</h3>
+    <div class="container my-5">
+        <h3>My Questions: </h3>
 
-    <a href="/create-post" class="button">
-        <div>Ask A Question</div>
-    </a>
-
-    {% for post in user_posts %}
-    <div class="textShortContainer">
-        <a href="view-post/{{post._id}}" class="textShort">
-            <p><b>{{post.title}}:</b> {{post.content[0:30]}}...</p>
+        <a href="/create-post">
+            <div class="btn btn-success mb-4 mt-2">Ask A New Question</div>
         </a>
-        {% if post.answered == "unsolved" %}
-        <p class="textShort {{post.answered}}">Not Solved</p>
-        {% else %}
-        <p class="textShort safe">Solved</p>
-        {% endif %}
-    </div>
 
-    {% endfor %}
+        {% for post in user_posts %}
+        <div class="textShortContainer">
+            <a href="view-post/{{post._id}}" class="textShort">
+                <p>
+                    <b>{{post.title}}:</b> {{post.content[0:30]}}...
+                    {% if post.answered == "unsolved" %}
+                    <span class="badge badge-danger">Not Solved</span>
+                    {% else %}
+                    <span class="badge badge-success">Solved</span>
+                    {% endif %}
+                </p>
+            </a>
+
+        </div>
+
+
+        {% endfor %}
+    </div>
 </section>
 
 {% endif %}
