@@ -54,8 +54,47 @@ def view_post(post_id):
     return render_template('view-post.html', **context)
 
 
-@post.route('/edit-post/<post_id>', methods=["GET", "POST"])
-@login_required
+@post.route('/posts/<sort>')
+def show_posts(sort):
+
+    postOrder = sort
+    postlist = mongo.db.posts.find({"answered": "unsolved"})
+    dropDownList = {
+        "newest": ["Newest First", "newest"],
+        "oldest": ["Oldest First", "oldest"],
+        "viewed": ["Most Viewed", "viewed"],
+        "random": ["Random", "random"]
+    }
+    currentDropDownChoice = dropDownList[postOrder]
+    dropDownList.pop(postOrder)
+
+    if postOrder == "newest":
+        postArray = []
+        for post in postlist:
+            postArray.append(post)
+        postArray.reverse()
+        postlist = postArray
+
+    if postOrder == "random":
+        pass
+
+    if postOrder == "viewed":
+        pass
+
+    if postOrder == "oldest":
+        pass
+
+    context = {
+        "dropList": dropDownList,
+        "dropCurrent": currentDropDownChoice,
+        "posts": postlist
+    }
+
+    return render_template('posts.html', **context)
+
+
+@ post.route('/edit-post/<post_id>', methods=["GET", "POST"])
+@ login_required
 def edit_post(post_id):
     """Display the page to edit a post"""
 
@@ -93,8 +132,8 @@ def edit_post(post_id):
         return render_template('edit-post.html', **context)
 
 
-@post.route('/delete-post/<post_id>', methods=["POST"])
-@login_required
+@ post.route('/delete-post/<post_id>', methods=["POST"])
+@ login_required
 def delete_post(post_id):
     """Delete a post by its id"""
 

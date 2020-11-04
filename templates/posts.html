@@ -4,10 +4,26 @@
 
 <section>
     <div class="container offset-1 col-10">
-        <div class="row">
-            <div class="pb-4">
-                <h3>Recent Unanswered Questions</h3>
-                <a href="/posts">View All Unanswered Questions</a>
+        <div class="row py-4">
+            <div>
+                <h3>All Unanswered Questions</h3>
+                <a href="/create-post">Ask a Question</a>
+            </div>
+            <div class="ml-auto">
+                <div class="row">
+                    <h3 class="pr-4">Sort posts:</h3>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{dropCurrent[0]}}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {% for item in dropList %}
+                            <a class="dropdown-item" href="/posts/{{dropList[item][1]}}">{{dropList[item][0]}}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
