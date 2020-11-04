@@ -2,51 +2,61 @@
 {% block content %}
 
 <section>
-    <h1>{{post.title}}</h1>
+    <div class="container offset-2 col-8">
+        <h1 class="text-center">{{post.title}}</h1>
+        <div class="offset-1 col-10">
+            <div class="row pt-4">
+                <img class="col-md-6 col-12" src="{{post.featuredImage}}">
+                <div class="col-md-6 col-12">
+                    <h3>
+                        {{post.content}}
+                    </h3>
+                    <p>Post Author: {{post.authorName}}</p>
+                    <p>Posted On: {{post.date_created.strftime('%B %-d, %Y')}}</p>
+                    {% if current_user.id == post.authorId %}
+                    <a href="/edit-post/{{post._id}}" class="button">
+                        <div class="btn btn-warning my-1">Edit Post</div>
+                    </a>
+                    <form method="POST" action="/delete-post/{{post._id}}" onsubmit="return confirm_delete()">
+                        <input type="submit" class="btn btn-danger my-1" value="Delete Post">
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
 
-    <img src="{{post.featuredImage}}">
 
-    <h3>
-        {{post.content}}
-    </h3>
-    <p>Post Author: {{post.authorName}}</p>
-    <p>Posted On: {{post.date_created.strftime('%B %-d, %Y')}}</p>
-    {% if current_user.id == post.authorId %}
-    <a href="/edit-post/{{post._id}}" class="button">
-        <div>Edit Post</div>
-    </a>
-    <form method="POST" action="/delete-post/{{post._id}}" onsubmit="return confirm_delete()">
-        <input type="submit" class="button danger" value="Delete Post">
-    </form>
-    {% endif %}
+        <div class="offset-3 col-6 my-4">
+            <h3>Comments:</h3>
 
+            {% for comment in comments %}
+            <div class="textShortContainer">
+                <p class="textShort"><b>{{comment.post_date.strftime("%m/%d/%y")}} - {{comment.author_name}}</b>:
+                    {{comment.text}} </p>
 
-    <h3>Comments:</h3>
+                {% if current_user.id == post.authorId and post.answered == "unsolved"%}
+                <form method="GET" action="/mark-as-solution/{{comment._id}}">
+                    <input type="submit" class="btn btn-success" value="Mark As Solution">
+                </form>
+                {% endif %}
 
-    {% for comment in comments %}
-    <div class="textShortContainer">
-        <p class="textShort"><b>{{comment.author_name}}</b>: {{comment.text}}</p>
+                {% if post.answered == comment._id %}
+                <p class="textShort safe">Solution</p>
+                {% endif %}
+            </div>
 
-        {% if current_user.id == post.authorId and post.answered == "unsolved"%}
-        <form method="GET" action="/mark-as-solution/{{comment._id}}">
-            <input type="submit" class="button safe" value="Mark As Solution">
-        </form>
-        {% endif %}
+            {% endfor %}
+            <hr>
+            <form method="POST" action="/comment/{{post._id}}">
+                <div class="form-group pt-2">
+                    <input type="text" name="comment" class="form-control" placeholder="Write something">
+                    <button type="submit" class="btn btn-primary mt-2">Send</button>
+                </div>
 
-        {% if post.answered == comment._id %}
-        <p class="textShort safe">Solution</p>
-        {% endif %}
+            </form>
+        </div>
+
     </div>
-
-    {% endfor %}
-
-    <form method="POST" action="/comment/{{post._id}}">
-        <input type="text" name="comment" value="" placeholder="Comment Here">
-        <input type="submit" class="button" value="Send">
-    </form>
-
-
-
 </section>
 
 {% endblock content %}

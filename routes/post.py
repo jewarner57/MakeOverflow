@@ -62,8 +62,6 @@ def show_posts(sort):
     dropDownList = {
         "newest": ["Newest First", "newest"],
         "oldest": ["Oldest First", "oldest"],
-        "viewed": ["Most Viewed", "viewed"],
-        "random": ["Random", "random"]
     }
     currentDropDownChoice = dropDownList[postOrder]
     dropDownList.pop(postOrder)
