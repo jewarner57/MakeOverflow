@@ -28,6 +28,7 @@ mongopass = os.getenv("MONGODBPASS")
 mongouser = os.getenv("MONGODBUSER")
 
 app.config["MONGO_URI"] = f"mongodb+srv://{mongouser}:{mongopass}@cluster0.ovfiw.mongodb.net/makeoverflow?retryWrites=true&w=majority"
+
 # create mongo instance
 mongo = PyMongo(app)
 
