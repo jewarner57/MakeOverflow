@@ -91,8 +91,8 @@ def show_posts(sort):
     return render_template('posts.html', **context)
 
 
-@ post.route('/edit-post/<post_id>', methods=["GET", "POST"])
-@ login_required
+@post.route('/edit-post/<post_id>', methods=["GET", "POST"])
+@login_required
 def edit_post(post_id):
     """Display the page to edit a post"""
 
@@ -130,8 +130,8 @@ def edit_post(post_id):
         return render_template('edit-post.html', **context)
 
 
-@ post.route('/delete-post/<post_id>', methods=["POST"])
-@ login_required
+@post.route('/delete-post/<post_id>', methods=["POST"])
+@login_required
 def delete_post(post_id):
     """Delete a post by its id"""
 
